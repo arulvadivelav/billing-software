@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Purchase #{{ purchase.id }}{% endblock %}
+{% block content %}
+<h2>Purchase #{{ purchase.id }}</h2>
+<p>Customer: {{ purchase.customer_email }} ({{ purchase.created_at.strftime('%Y-%m-%d %H:%M') }})</p>
+
+<table>
+  <thead>
+    <tr><th>Product ID</th><th>Name</th><th>Unit Price</th><th>Qty</th><th>Purchase Price</th><th>Tax %</th><th>Tax Payable</th><th>Total</th></tr>
+  </thead>
+  <tbody>
+    {% for item in purchase.items %}
+    <tr>
+      <td>{{ item.product_business_id }}</td>
+      <td>{{ item.product_name }}</td>
+      <td>{{ "%.2f"|format(item.unit_price) }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ "%.2f"|format(item.purchase_price) }}</td>
+      <td>{{ "%.2f"|format(item.tax_percentage) }}</td>
+      <td>{{ "%.2f"|format(item.tax_payable) }}</td>
+      <td>{{ "%.2f"|format(item.total_price) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>
+  Total without tax: {{ "%.2f"|format(purchase.total_price_without_tax) }}<br>
+  Total tax payable: {{ "%.2f"|format(purchase.total_tax_payable) }}<br>
+  Net price: {{ "%.2f"|format(purchase.net_price) }}<br>
+  Rounded net price: {{ "%.2f"|format(purchase.rounded_net_price) }}<br>
+  Cash paid: {{ "%.2f"|format(purchase.cash_paid) }}<br>
+  Balance given: {{ "%.2f"|format(purchase.balance_amount) }}
+</p>
+
+<p>Change Given:</p>
+<table>
+  <thead><tr><th>Denomination</th><th>Count</th></tr></thead>
+  <tbody>
+    {% for cg in purchase.change_given %}
+    <tr><td>{{ cg.denomination_value }}</td><td>{{ cg.count }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="/purchases?email={{ purchase.customer_email }}">Back to history</a>
+{% endblock %}

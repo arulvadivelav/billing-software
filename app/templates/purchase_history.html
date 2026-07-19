@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Purchase History{% endblock %}
+{% block content %}
+<h2>Purchase History</h2>
+
+<form method="get" action="/purchases">
+  <label>Customer Email</label>
+  <input type="email" name="email" value="{{ email }}" placeholder="customer@example.com" required>
+  <button type="submit">Search</button>
+</form>
+
+{% if email %}
+<table>
+  <thead><tr><th>Invoice #</th><th>Date</th><th>Amount</th><th></th></tr></thead>
+  <tbody>
+    {% for p in purchases %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ "%.2f"|format(p.rounded_net_price) }}</td>
+      <td><a href="/purchases/{{ p.id }}">View items</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

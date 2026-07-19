@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Bill #{{ bill.purchase_id }}{% endblock %}
+{% block content %}
+<h2 style="text-align:center;">Billing Page</h2>
+
+<p><label>Customer Email</label> {{ bill.customer_email }}</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Product ID</th><th>Unit Price</th><th>Quantity</th><th>Purchase Price</th>
+      <th>Tax % for item</th><th>Tax payable for item</th><th>Total price of the item</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in bill.items %}
+    <tr>
+      <td>{{ item.product_id }}</td>
+      <td>{{ "%.2f"|format(item.unit_price) }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ "%.2f"|format(item.purchase_price) }}</td>
+      <td>{{ "%.2f"|format(item.tax_percentage) }}</td>
+      <td>{{ "%.2f"|format(item.tax_payable) }}</td>
+      <td>{{ "%.2f"|format(item.total_price) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>
+  Total price without tax: {{ "%.2f"|format(bill.total_price_without_tax) }}<br>
+  Total tax payable: {{ "%.2f"|format(bill.total_tax_payable) }}<br>
+  Net price of the purchased item: {{ "%.2f"|format(bill.net_price) }}<br>
+  Rounded down value of the purchased items net price: {{ "%.2f"|format(bill.rounded_net_price) }}<br>
+  Balance payable to the customer: {{ "%.2f"|format(bill.balance_amount) }}
+</p>
+
+<p>Balance Denomination:</p>
+<table>
+  <thead><tr><th>Denomination</th><th>Count</th></tr></thead>
+  <tbody>
+    {% for cd in bill.change_denominations %}
+    <tr><td>{{ cd.value }}</td><td>{{ cd.count }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><a href="/billing">New Bill</a> | <a href="/purchases?email={{ bill.customer_email }}">View Purchase History</a></p>
+{% endblock %}

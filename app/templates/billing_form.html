@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Billing Page{% endblock %}
+{% block content %}
+<h2 style="text-align:center;">Billing Page</h2>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form action="/billing/generate" method="post" id="billing-form">
+
+  <div class="row">
+    <label>Customer Email</label>
+    <input type="email" name="customer_email" placeholder="Email ID" required>
+  </div>
+
+  <div class="row">
+    <button type="button" onclick="addProductRow()">Add New</button>
+  </div>
+  <div>
+    <label>Bill section</label>
+    <div id="bill-section" style="display:inline-block;"></div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <label>Denominations</label>
+    {% for d in denominations %}
+    <div class="row">
+      <label>{{ d.value }}</label>
+      <input type="hidden" name="denom_value[]" value="{{ d.value }}">
+      <input type="number" name="denom_count[]" min="0" value="{{ d.available_count }}" placeholder="Count">
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row">
+    <label>Cash paid by customer</label>
+    <input type="number" step="0.01" min="0" name="cash_paid" placeholder="Amount" required>
+  </div>
+
+  <div class="row">
+    <a href="/billing"><button type="button">Cancel</button></a>
+    <button type="submit">Generate Bill</button>
+  </div>
+</form>
+
+<script>
+  function addProductRow() {
+    const container = document.getElementById('bill-section');
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML =
+      '<input type="text" name="product_id[]" placeholder="Product ID" required> ' +
+      '<input type="number" name="quantity[]" min="1" placeholder="Quantity" required>';
+    container.appendChild(row);
+  }
+  document.addEventListener('DOMContentLoaded', addProductRow);
+</script>
+{% endblock %}
